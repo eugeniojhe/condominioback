@@ -11,3 +11,6 @@ or push an existing repository from the command line
 git remote add origin https://github.com/eugeniojhe/condominioback.git
 git branch -M main
 git push -u origin main
+
+
+INSERT INTO migrations (migration, batch) VALUES ("2021_01_12_184716_create_all_tables", 1)
