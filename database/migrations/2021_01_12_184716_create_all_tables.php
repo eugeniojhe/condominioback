@@ -236,6 +236,89 @@ class CreateAllTables extends Migration
             $table->timestamps();
         });
      
+
+        Schema::create('warnings', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('unit_id');
+            $table->string('title'); 
+            $table->string('status')->default('IN_REVIEW'); //Resolved 
+            $table->text('photos'); 
+            $table->unsignedBigInteger('created_by');             
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('unit_id')->references('id')->on('units'); 
+            $table->timestamps();
+        });
+
+       
+        Schema::create('lostfounds', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('unit_id');
+            $table->string('photo');
+            $table->string('description');
+            $table->string('status')->default('lost'); //Found
+            $table->string('solution'); 
+            $table->date('datesolution'); 
+            $table->unsignedBigInteger('created_by');             
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('unit_id')->references('id')->on('units');          
+        });
+
+        Schema::create('areas', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('unit_id');
+            $table->string('title'); 
+            $table->string('cover');
+            $table->string('days');
+            $table->integer('status')->default(1);
+            $table->time('start_time'); 
+            $table->time('end_time'); 
+            $table->unsignedBigInteger('created_by');             
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('unit_id')->references('id')->on('units');          
+        });
+
+        Schema::create('areadisabledays', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('area_id'); 
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('unit_id');
+            $table->string('title'); 
+            $table->date('day'); 
+            $table->time('start_time'); 
+            $table->time('end_time'); 
+            $table->unsignedBigInteger('created_by'); 
+            $table->foreign('area_id')->references('id')->on('areas'); 
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('unit_id')->references('id')->on('units');          
+        });
+
+
+        Schema::create('reservations', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('area_id'); 
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('unit_id');
+            $table->string('title'); 
+            $table->date('day'); 
+            $table->date('reservation_data'); 
+            $table->time('start_time'); 
+            $table->time('end_time'); 
+            $table->unsignedBigInteger('created_by'); 
+            $table->foreign('area_id')->references('id')->on('areas'); 
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('unit_id')->references('id')->on('units');          
+        });
+
+             
+
         Schema::create('password_resets', function (Blueprint $table) {
             $table->string('email')->index();
             $table->string('token');
@@ -264,6 +347,12 @@ class CreateAllTables extends Migration
         Schema::dropIfExists('failed_jobs');
         Schema::dropIfExists('password_resets');
         Schema::dropIfExists('billets');
+        Schema::dropIfExists('reservations'); 
+        Schema::dropIfExists('areadisabledays');
+        Schema::dropIfExists('areas'); 
+        Schema::dropIfExists('lostfounds'); 
+        Schema::dropIfExists('warnings');
+        Schema::dropIfExists('lostfounds');
         Schema::dropIfExists('docs');
         Schema::dropIfExists('walllikes');
         Schema::dropIfExists('walls');        
