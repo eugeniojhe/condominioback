@@ -14,3 +14,6 @@ git push -u origin main
 
 
 INSERT INTO migrations (migration, batch) VALUES ("2021_01_12_184716_create_all_tables", 1)
+
+
+Cria index uniq com varias chaves para a tabela UnitPets 

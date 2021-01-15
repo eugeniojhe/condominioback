@@ -19,9 +19,9 @@ class CreateAllTables extends Migration
             $table->id();
             $table->string('name'); 
             $table->string('phone')->nullable();
-            $table->string('cpf')->unique(); 
+            $table->string('cpf')->unique()->nullable(); 
             $table->unsignedSmallInteger('age')->nullable(); 
-            $table->string('email')->unique()->nullable();; 
+            $table->string('email')->unique();; 
             $table->string('avatar')->default('userdefault.png'); 
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
@@ -42,7 +42,7 @@ class CreateAllTables extends Migration
         Schema::create('cities', function(Blueprint $table){
             $table->id(); 
             $table->string('name');
-            $table->unsignedBigInteger('state_id')->nullable(); 
+            $table->unsignedBigInteger('state_id'); 
             $table->unsignedBigInteger('created_by');
             $table->foreign('state_id')->references('id')->on('states'); 
             $table->foreign('created_by')->references('id')->on('users'); 
@@ -83,7 +83,7 @@ class CreateAllTables extends Migration
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->string('name'); 
-            $table->string('details'); 
+            $table->string('details')->nullable(); 
             $table->smallInteger('area')->nullable();
             $table->unsignedBigInteger('owner_id')->nullable(); 
             $table->unsignedBigInteger('type_id')->nullable(); 
@@ -148,9 +148,9 @@ class CreateAllTables extends Migration
             $table->string('renavan')->nullable(); 
             $table->date('year')->nullable();
             $table->string('photo')->default('vehicledefault.png');             
-            $table->foreign('company_id')->references('id')->on('companies');
             $table->unsignedBigInteger('unit_id'); 
             $table->unsignedBigInteger('created_by'); 
+            $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('unit_id')->references('id')->on('units'); 
             $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();
@@ -192,11 +192,11 @@ class CreateAllTables extends Migration
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->string('title');
-            $table->string('body'); 
+            $table->string('body')->nullable(); 
             $table->unsignedBigInteger('unit_id');
+            $table->unsignedBigInteger('created_by'); 
             $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('unit_id')->references('id')->on('units'); 
-            $table->unsignedBigInteger('created_by');            
             $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();
         });
@@ -216,7 +216,7 @@ class CreateAllTables extends Migration
             $table->id();
             $table->unsignedBigInteger('company_id');
             $table->string('title'); 
-            $table->string('url'); 
+            $table->string('url')->nullable(); 
             $table->unsignedBigInteger('user_id'); 
             $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('user_id')->references('id')->on('users');
@@ -228,10 +228,10 @@ class CreateAllTables extends Migration
             $table->unsignedBigInteger('company_id');
             $table->string('title'); 
             $table->string('url'); 
-            $table->unsignedBigInteger('user_id'); 
+            $table->unsignedBigInteger('created_by'); 
             $table->unsignedBigInteger('unit_id'); 
             $table->foreign('company_id')->references('id')->on('companies');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('created_by')->references('id')->on('users');
             $table->foreign('unit_id')->references('id')->on('units'); 
             $table->timestamps();
         });
@@ -259,8 +259,8 @@ class CreateAllTables extends Migration
             $table->string('photo');
             $table->string('description');
             $table->string('status')->default('lost'); //Found
-            $table->string('solution'); 
-            $table->date('datesolution'); 
+            $table->string('solution')->default('em andamento'); 
+            $table->date('datesolution')->nullable(); 
             $table->unsignedBigInteger('created_by');             
             $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('created_by')->references('id')->on('users');
@@ -270,7 +270,6 @@ class CreateAllTables extends Migration
         Schema::create('areas', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('unit_id');
             $table->string('title'); 
             $table->string('cover');
             $table->string('days');
