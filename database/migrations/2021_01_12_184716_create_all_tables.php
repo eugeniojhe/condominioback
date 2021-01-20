@@ -47,7 +47,9 @@ class CreateAllTables extends Migration
             $table->foreign('state_id')->references('id')->on('states'); 
             $table->foreign('created_by')->references('id')->on('users'); 
 
-        });        
+        });   
+        
+                
         Schema::create('companies', function (Blueprint $table) {
             $table->id();
             $table->string('name'); 
@@ -67,15 +69,35 @@ class CreateAllTables extends Migration
             $table->foreign('state_id')->references('id')->on('states'); 
             $table->timestamps();
         });
+
+        Schema::create('company_users',function(Blueprint $table) {
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('user_id'); 
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->primary(['company_id','user_id']); 
+            $table->timestamps(); 
+        });
        
         Schema::create('unittypes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
-            $table->string('name');
+            $table->string('title');
             $table->unsignedBigInteger('created_by'); 
             $table->foreign('created_by')->references('id')->on('users'); 
             $table->foreign('company_id')->references('id')->on('companies');             
             $table->timestamps();
+        });
+
+        Shema::create('unit_addresses',function(Blueprint $table){
+            $table->id(); 
+            $table->unsignedBigInteger('company_id');
+            $table->string('title');
+            $table->varchar('bloco',5)->nullable(); 
+            $table->string('address')->nullable();
+            $table->smallInter('floors')->nullable(); 
+            $table->string('neighboorhod')->nullable();
+            $table->smallInteger('number');
         });
 
 
@@ -86,12 +108,14 @@ class CreateAllTables extends Migration
             $table->string('details')->nullable(); 
             $table->smallInteger('area')->nullable();
             $table->unsignedBigInteger('owner_id')->nullable(); 
-            $table->unsignedBigInteger('type_id')->nullable(); 
+            $table->unsignedBigInteger('type_id')->nullable();
+            $table->unsignedBigInteger('address_id')->nullable();  
             $table->unsignedBigInteger('created_by'); 
+            $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('owner_id')->references('id')->on('users');
             $table->foreign('type_id')->references('id')->on('unittypes');
-            $table->foreign('created_by')->references('id')->on('users'); 
-            $table->foreign('company_id')->references('id')->on('companies'); 
+            $table->foreing('address_id') ->references('id')->on('unit_addresses'); 
+            $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();
         });
 
@@ -270,6 +294,7 @@ class CreateAllTables extends Migration
         Schema::create('areas', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('unit_id'); 
             $table->string('title'); 
             $table->string('cover');
             $table->string('days');
@@ -361,12 +386,14 @@ class CreateAllTables extends Migration
         Schema::dropIfExists('unitvehicles'); 
         Schema::dropIfExists('unitgoods');
         Schema::dropIfExists('goods');
-        Schema::dropIfExists('unitpeoples');        
+        Schema::dropIfExists('unitpeoples'); 
+        Schema::dropIfExists('unit_addresses'); 
         Schema::dropIfExists('units');
         Schema::dropIfExists('unittypes');
         Schema::dropIfExists('companyusers'); 
         Schema::dropIfExists('cities');
-        Schema::dropIfExists('states');  
+        Schema::dropIfExists('states'); 
+        Schema::dropIfExists('company_users'); 
         Schema::dropIfExists('companies');      
         Schema::dropIfExists('users');
     }

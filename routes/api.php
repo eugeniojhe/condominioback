@@ -33,10 +33,10 @@ Route::get('/ping', function () {
     return ['pong' => true]; 
 }); 
 
-Route::get('/401',[AuthController::class,'unathorized'])->name('login'); 
+Route::get('/401',[AuthController::class,'unauthorized'])->name('login'); 
 
-Route::get('/auth/login',[AuthController::class,'login']); 
-Route::get('/auth/register',[AuthController::class,'register']); 
+Route::post('/auth/login',[AuthController::class,'login']); 
+Route::post('/auth/register',[AuthController::class,'register']); 
 
 Route::middleware('auth:api')->group(function(){
     Route::post('/auth/validade',[AuthController::class,'validateToken']);
