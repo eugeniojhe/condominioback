@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\User; 
 use App\Models\Unit; 
+use App\Models\Company; 
 use App\Models\CompanyUser; 
 
 class AuthController extends Controller
@@ -42,6 +43,8 @@ class AuthController extends Controller
             'company_id' => 'required|integer|exists:companies,id',
             'password_confirm' => 'required|same:password', 
         ]);
+
+
 
         if($validator->fails()){
             $resp['error'] = $validator->errors();
@@ -98,26 +101,68 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(Request $request)
     {
-       $resp = ['error' => '']; 
-       $credentials = request(['email', 'password']);       
+       $resp = ['error' => ''];              
+       $validator = Validator::make($request->all(), [
+            'company' => 'required|integer|exists:companies,id', 
+            'email' =>'required|email|exists:users,email',
+            'password' => 'required',                
+        ]);
+    
+        if($validator->fails()){
+            $resp['error'] = $validator->errors();
+            return $resp;
+        } 
 
-        if (! $token = auth()->attempt($credentials)) {
+        $company_id = $request->input('company');
+        $company = Company::find($company_id);  
+        if (!$company){
+            $resp['erro'] = "Falha ao recuperar empresa";
+            return $resp; 
+        }
+
+       $credentials = request(['email', 'password']);     
+       if (! $token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         $user = auth()->user();
-        $Company = Company::find($company_id);   
+        
+        $companyUser = CompanyUser::where('company_id',$company_id)
+                                  ->where('user_id',$user->id)
+                                  ->first();
+         
+        if (!$companyUser || !isset($companyUser->company_id)){
+            $resp['erro'] = "Usuário não esta relacionado a empresa"; 
+            return $resp; 
+        }
+        $user->company_id = $company_id; 
+        $user->save(); //Atualiza o usuário com o id da companhia conectada  
+
         $units = $user->units()
                       ->where('owner_id',$user->id)
-                      ->where('company_id',$company->id);
+                      ->where('company_id',$company->id)
+                      ->get();
         //$resp['user'] =  response()->json(auth()->user());   
         $resp['user'] = $user; 
         //$resp['token'] = $this->respondWithToken($token);
         $resp['user']['token'] = $token;
         $resp['user']['units'] = $units; 
         //$resp['user']['units'] = Unit::where('owner_id',Auth()->user()->id)->get();
+        return $resp; 
+    }
+
+
+    public function validateToken() {
+        $resp = ['error' => ''];
+        $user = auth()->user();
+        $units = $user->units()
+                      ->where('owner_id',$user->id)
+                      ->where('company_id',$user->company_id);
+        $resp['user'] = $user; 
+        $resp['user']['units'] = $units;
+
         return $resp; 
     }
 
