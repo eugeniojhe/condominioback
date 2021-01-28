@@ -1,0 +1,13 @@
+DOCUMENTAÇÃO 
+
+1)Verificar a tabela de bancos 
+2)Validando campos enum
+ 'title'         => 'required|min:3|max:100',
+        'description'   => 'required|min:10|max:20000',
+        'date'            => 'required|date',
+        'status'        => [
+            'required',
+            Rule::in(['published', 'draft', 'scheduled', 'excluded']),
+        ],
+
+Realizar a modelagen de cadastro de units. 

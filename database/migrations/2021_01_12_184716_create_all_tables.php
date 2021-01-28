@@ -14,38 +14,6 @@ class CreateAllTables extends Migration
     public function up()
     {
        
-                
-        Schema::create('companies', function (Blueprint $table) {
-            $table->id();
-            $table->string('name'); 
-            $table->unsignedBigInteger('companytype_id'); 
-            $table->string('cpf_cnpj')->unique()->nullable();
-            $table->string('inscricao')->unique()->nullable(); 
-            $table->string('email')->unique()->nullable();
-            $table->string('site')->nullable();
-            $table->string('address')->nullable(); 
-            $table->unsignedBigInteger('city_id')->nullable(); 
-            $table->string('bairro')->nullable(); 
-            $table->unsignedBigInteger('state_id')->nullable();
-            $table->string('phone_1')->nullable();
-            $table->string('phone_2')->nullable();  
-            $table->string('mobile_1')->nullable(); 
-            $table->string('mobile_2')->nullable(); 
-            $table->string('counter')->nullable();
-            $table->string('crc')->nullable(); 
-            $table->floatval('interest_rate')->nullable();
-            $table->unsignedBigInteger('interest_type')->nullable();
-            $table->floatval('fee_rate')->nullable();
-            $table->unsignedBigInteger('fee_type')->nullable();
-            $table->string('logo')->default('logodefault.png');
-            $table->foreign('companytype_id')->references('id')->on('company_types');   
-            $table->foreign('city_id')->references('id')->on('cities');
-            $table->foreign('state_id')->references('id')->on('states'); 
-            $table->foreing('interest_type')->references('id')->on('interests_type'); 
-            $table->foreing('fee_type')->references('id')->on('fee_types');
-            $table->timestamps();
-        });
-        
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('company_id')->nullable(); 
@@ -58,12 +26,9 @@ class CreateAllTables extends Migration
             $table->string('password');
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken(); 
-            $table->foreign('company_id')->references('id')->on('companies'); 
+           // $table->foreign('company_id')->references('id')->on('companies'); 
             $table->timestamps();
         });
-
-
-        
 
         Schema::create('states',function(Blueprint $table){
             $table->id(); 
@@ -83,6 +48,56 @@ class CreateAllTables extends Migration
             $table->timestamps();
         });   
         
+                       
+        Schema::create('companies', function (Blueprint $table) {
+            $table->id();
+            $table->string('name'); 
+            $table->string('trading')->nullable(); //Nome fantasia - Fantasy name 
+            $table->string('description')->nullable(); 
+            $table->unsignedBigInteger('companytype_id'); 
+            $table->string('cpf_cnpj')->unique()->nullable();
+            $table->string('inscricao')->unique()->nullable(); 
+            $table->string('email')->unique()->nullable();
+            $table->string('site')->nullable();
+            $table->string('address')->nullable(); 
+            $table->unsignedBigInteger('city_id')->nullable(); 
+            $table->string('bairro')->nullable(); 
+            $table->unsignedBigInteger('state_id')->nullable();
+            $table->string('phone_1')->nullable();
+            $table->string('phone_2')->nullable();  
+            $table->string('mobile_1')->nullable(); 
+            $table->string('mobile_2')->nullable(); 
+            $table->string('counter')->nullable();
+            $table->string('crc')->nullable(); 
+            $table->enum('tax_types',['diary','monthely','yearly']);
+            $table->float('interest_tax')->nullable(); //Taxa de juros - Interest tax  
+            $table->enum('fee_types',['percentage','value']);
+            $table->float('fee_rate')->nullable();//Multa por atraso            
+            $table->enum('charge_type',['fixed','prorated']);//Fixa ou ratiada //
+            $table->float('condominium_value')->nullable(); //Valor do condominio
+            $table->enum('reserve_fund_type',['percentage','value']); 
+            $table->float('reserve_fund_value')->nullable(); //Fundo reserva //Valor ou fixo
+            $table->enum('discount_type',['percentage','value']); 
+            $table->float('discount_value')->nullable(); 
+            $table->smallInteger('discount_days')->nullable(); //Dias para descounto 
+            $table->smallInteger('expiration_day')->nullable(); //Dia vencimento do boleto  
+            $table->string('logo')->default('logodefault.png');
+            $table->boolval('has_block'); //Condominio tem bloco 
+            $table->foreign('city_id')->references('id')->on('cities');
+            $table->foreign('state_id')->references('id')->on('states');             
+            $table->timestamps();
+        });
+
+        Schema::create('contacts', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('company_id'); 
+            $table->string('name');
+            $table->string('email')->unique();
+            $table->unsignedBigInteger('created_by');
+            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('created_by')->references('id')->on('users');             
+            $table->timestamps();             
+        });
        
 
         Schema::create('company_users',function(Blueprint $table) {
@@ -104,13 +119,13 @@ class CreateAllTables extends Migration
             $table->timestamps();
         });
 
-        Shema::create('unit_addresses',function(Blueprint $table){
+        Schema::create('unit_addresses',function(Blueprint $table){
             $table->id(); 
             $table->unsignedBigInteger('company_id');
             $table->string('title');
-            $table->varchar('bloco',5)->nullable(); 
+            $table->string('bloco',5)->nullable(); 
             $table->string('address')->nullable();
-            $table->smallInter('floors')->nullable(); 
+            $table->smallInteger('floors')->nullable(); 
             $table->string('neighboorhod')->nullable();
             $table->smallInteger('number');
             $table->timestamps();
@@ -130,7 +145,7 @@ class CreateAllTables extends Migration
             $table->foreign('company_id')->references('id')->on('companies');
             $table->foreign('owner_id')->references('id')->on('users');
             $table->foreign('type_id')->references('id')->on('unittypes');
-            $table->foreing('address_id') ->references('id')->on('unit_addresses'); 
+            $table->foreign('address_id') ->references('id')->on('unit_addresses'); 
             $table->foreign('created_by')->references('id')->on('users');
             $table->timestamps();
         });
@@ -407,11 +422,13 @@ class CreateAllTables extends Migration
         Schema::dropIfExists('units');
         Schema::dropIfExists('unittypes');
         Schema::dropIfExists('companyusers'); 
+         
+        Schema::dropIfExists('company_users'); 
+        Schema::dropIfExists('contacts'); 
+        Schema::dropIfExists('companies'); 
         Schema::dropIfExists('cities');
         Schema::dropIfExists('states'); 
-        Schema::dropIfExists('company_users'); 
-        Schema::dropIfExists('users');
-        Schema::dropIfExists('companies');     
+        Schema::dropIfExists('users');          
         
     }
 }
