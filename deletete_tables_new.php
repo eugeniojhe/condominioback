@@ -3,6 +3,7 @@ banks
 bank_agencies
 companies
 company_users
+status
 financial_accounts
 bank_accounts
 marital_status
@@ -29,7 +30,6 @@ poll_correct_answers
 areas
 areadisabledays
 visitors
-status
 prorates
 account_payables
 item_account_payables
