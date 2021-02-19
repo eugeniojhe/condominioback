@@ -82,7 +82,7 @@ class CreateAllTables extends Migration
             $table->smallInteger('discount_days')->nullable(); //Dias para descounto 
             $table->smallInteger('expiration_day')->nullable(); //Dia vencimento do boleto  
             $table->string('logo')->default('logodefault.png');
-            $table->boolval('has_block'); //Condominio tem bloco 
+            $table->boolean('has_block')->nullable(); //Condominio tem bloco 
             $table->foreign('city_id')->references('id')->on('cities');
             $table->foreign('state_id')->references('id')->on('states');             
             $table->timestamps();

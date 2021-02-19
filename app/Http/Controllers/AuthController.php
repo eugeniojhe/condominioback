@@ -38,7 +38,7 @@ class AuthController extends Controller
             'email' =>'required|email|unique:users,email',
             'cpf' => 'required:digits:11|unique:users,cpf',
             'password' => 'required',
-            //'phone' => 'sometimes|required|min:8|regex:/(01)[0-9]{9}/',
+            'phone' => 'sometimes|required|min:8|regex:/(01)[0-9]{9}/',
             'phone' => 'sometimes|required|min:8',
             'company_id' => 'required|integer|exists:companies,id',
             'password_confirm' => 'required|same:password', 
