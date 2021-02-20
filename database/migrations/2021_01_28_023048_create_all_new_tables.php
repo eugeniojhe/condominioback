@@ -16,7 +16,7 @@ class CreateAllNewTables extends Migration
         
         Schema::create('banks', function(Blueprint $table){
             $table->id(); 
-            $table->unsignedBigInteger('bank_cod')->unique; 
+            $table->unsignedBigInteger('bank')->unique; 
             $table->string('name',100);
             $table->string('url')->nullable(); 
             $table->timestamps();
@@ -24,10 +24,12 @@ class CreateAllNewTables extends Migration
         
         Schema::create('bankagencies', function(Blueprint $table){
             $table->id(); 
-            $table->unsignedBigInteger('agend_cod')->unique; 
+            $table->unsignedBigInteger('bank'); 
+            $table->unsignedBigInteger('agency'); 
             $table->string('name',100);
             $table->string('url')->nullable(); 
             $table->unsignedBigInteger('bank_id');
+            $table->unique(['bank','agency']);
             $table->foreign('bank_id')->references('id')->on('banks'); 
             $table->timestamps();
         });  
@@ -73,7 +75,7 @@ class CreateAllNewTables extends Migration
             $table->unsignedTinyInteger('expiration_day')->nullable(); //Dia vencimento do boleto  
             $table->string('logo')->default('logodefault.png');
             $table->boolean('has_block')->nullable(); //Condominio tem bloco 
-            $table->unsignedTinyInteger('bloks')->nullable(); //Total blocks 
+            $table->unsignedTinyInteger('blocks')->nullable(); //Total blocks 
             $table->unsignedTinyInteger('apartments')->nullable(); //Total Aptos 
             $table->unsignedBigInteger('bank_slip')->nullable();//Bank to emission slip 
             $table->unsignedBigInteger('bankagency_slip')->nullable(); 
@@ -124,6 +126,7 @@ class CreateAllNewTables extends Migration
         Schema::create('financialaccounts', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('company_id');
+            $table->string('name');
             $table->enum('type',[1,2])->nullable();//1-Credit 2-Debit 
             $table->unsignedBigInteger('created_by');
             $table->unsignedBigInteger('status_id')->nullable(); 
@@ -175,20 +178,21 @@ class CreateAllNewTables extends Migration
             $table->string('name');           
             $table->string('description')->nullable(); 
             $table->string('email')->unique()->nullable();
-            $table->string('cpf_cnpj')->unique()->nullable();
-            $table->string('inscricao')->unique()->nullable();           
+            $table->string('cpf_cnpj',15)->unique()->nullable();
+            $table->string('status_subscription')->unique()->nullable();           
             $table->string('phone_1')->nullable();
             $table->string('phone_2')->nullable();  
             $table->string('mobile_1')->nullable(); 
             $table->string('mobile_2')->nullable();
             $table->boolean('access_portal')->default('1');//Allow access portal
-            $table->boolean('update_data')->default('1'); //Update data at next access
-            $table->string('portal_user')->nullable();
-            $table->string('password_portal')->nullable();
+            $table->boolean('update_date')->default('1'); //Update data at next access
+           // $table->string('user_portal')->nullable();
+            //$table->string('password_portal')->nullable();/
+            $table->unsignedBigInteger('user_id')->nullable(); //Usuario no portal //
             $table->string('identity_registration')->nullable();  
             $table->string('agency_emiter')->nullable(); 
-            $table->unsignedBigInteger('gender_id')->nullable; 
-            $table->unsignedBigInteger('maritalstatus_id');
+            $table->unsignedBigInteger('gender_id')->nullable(); 
+            $table->unsignedBigInteger('maritalstatus_id')->nullable();
             $table->date('birthday')->nullable(); 
             $table->string('occupation')->nullable(); 
             $table->string('workplace')->nullable(); 
