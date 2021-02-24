@@ -11,7 +11,9 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\DocController; 
 use App\Http\Controllers\GoodController; 
 use App\Http\Controllers\LostFoundController; 
+use App\Http\Controllers\ProviderController; 
 use App\Http\Controllers\PetController; 
+use App\Http\Controllers\ReservationController; 
 use App\Http\Controllers\StateController; 
 use App\Http\Controllers\UnitController; 
 use App\Http\Controllers\WallController; 
@@ -70,8 +72,9 @@ Route::middleware('auth:api')->group(function(){
     Route::post('/reservation/{id}',[ReservationController::class,'setReservation']);
 
     Route::get('/reservation/{id}/disabledates',[ReservationController::class,'getDisableDates']);
-    Route::get('/reservation/{id}/times',[ReserevationController::class,'getTimes']);
+    Route::get('/reservation/{id}/times',[ReservationController::class,'getTimes']);
 
     Route::get('/myreservations',[ReservationController::class,'getMyReservations']);
     Route::delete('/myreservation/{id}',[ReservationController::class,'delMyReservation']); 
+    Route::resource('provider', ProviderController::class);
 });

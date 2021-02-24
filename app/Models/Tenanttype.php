@@ -5,14 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CompanyUser extends Model
+class Tenanttype extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'company_id',
-        'user_id', 
-    ];
-    
-    public $table = 'companyusers'; 
+    public $table = "tenattypes"; 
 }

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\User; 
 use App\Models\Unit; 
+use App\Models\UnitTenant; 
 use App\Models\Company; 
 use App\Models\CompanyUser; 
 
@@ -28,7 +29,7 @@ class AuthController extends Controller
      */
     public function __construct()
     {
-       // $this->middleware('auth:api', ['except' => ['login','register']]);
+        $this->middleware('auth:api', ['except' => ['login','register']]);
     }
 
     public function register(Request $request) {
@@ -44,14 +45,10 @@ class AuthController extends Controller
             'company_id' => 'required|integer|exists:companies,id',
              
         ]);
-
-
-
         if($validator->fails()){
             $resp['error'] = $validator->errors();
             return $resp;
         }
-
 
         $name = $request->input('name'); 
         $email = $request->input('email'); 
@@ -88,10 +85,21 @@ class AuthController extends Controller
              return $resp; 
         }
         $user = auth()->user(); 
-        $units = Unit::select(['id','name'])
-                       ->where('company_id',$company_id)
-                       ->where('owner_id',$user->id); 
+     
         $resp['user'] = $user;
+        $unitTenants = UnitTenant::select()
+                                  ->where('company_id',$company_id)
+                                  ->where('tenant_id',$user->id)
+                                  ->get();
+      
+        
+        $units = array(); 
+        foreach($unitTenants as $unitTenant) {
+            $units = Unit::select()
+                            ->where('id',$unitTenant->unit_id)
+                            ->where('company_id',$unitTenant->company_id)
+                            ->get(); 
+        }
         $resp['user'] ['units'] = $units; 
         $resp['token'] = $token; 
         return $resp; 
@@ -119,12 +127,12 @@ class AuthController extends Controller
         $company_id = $request->input('company');
         $company = Company::find($company_id);  
         if (!$company){
-            $resp['erro'] = "Falha ao recuperar empresa";
+            $resp['error'] = "Falha ao recuperar empresa";
             return $resp; 
         }
 
        $credentials = request(['email', 'password']);     
-       if (! $token = auth()->attempt($credentials)) {
+       if (!$token = auth()->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -135,22 +143,29 @@ class AuthController extends Controller
                                   ->first();
          
         if (!$companyUser || !isset($companyUser->company_id)){
-            $resp['erro'] = "Usuário não esta relacionado a empresa"; 
+            $resp['error'] = "Usuário não esta relacionado a empresa"; 
             return $resp; 
         }
         $user->company_id = $company_id; 
-        $user->save(); //Atualiza o usuário com o id da companhia conectada  
-
-        $units = $user->units()
-                      ->where('owner_id',$user->id)
-                      ->where('company_id',$company->id)
-                      ->get();
-        //$resp['user'] =  response()->json(auth()->user());   
-        $resp['user'] = $user; 
-        //$resp['token'] = $this->respondWithToken($token);
+        $user->save(); //Atualiza o usuário com o id da companhia conectada 
+        
+        $unitTenants = UnitTenant::select()
+                                  ->where('company_id',$company_id)
+                                  ->where('tenant_id',$user->id)
+                                  ->get();
+      
+        
+        $units = array(); 
+        foreach($unitTenants as $unitTenant) {
+            $units[] = Unit::select()
+                            ->where('id',$unitTenant->unit_id)
+                            ->where('company_id',$unitTenant->company_id)
+                            ->get(); 
+        }
+        $resp['user'] = $user;
+        $resp['user']['units'] = $units;  
         $resp['user']['token'] = $token;
-        $resp['user']['units'] = $units; 
-        //$resp['user']['units'] = Unit::where('owner_id',Auth()->user()->id)->get();
+             
         return $resp; 
     }
 
@@ -158,11 +173,21 @@ class AuthController extends Controller
     public function validateToken() {
         $resp = ['error' => ''];
         $user = auth()->user();
-        $units = $user->units()
-                      ->where('owner_id',$user->id)
-                      ->where('company_id',$user->company_id);
-        $resp['user'] = $user; 
-        $resp['user']['units'] = $units;
+        $unitTenants = UnitTenant::select()
+                                  ->where('company_id',$user->company_id)
+                                  ->where('tenant_id',$user->id)
+                                  ->get();
+      
+        
+        $units = array(); 
+        foreach($unitTenants as $unitTenant) {
+            $units[] = Unit::select()
+                            ->where('id',$unitTenant->unit_id)
+                            ->where('company_id',$unitTenant->company_id)
+                            ->get(); 
+        }
+        $resp['user'] = $user;
+        $resp['user']['units'] = $units;             
 
         return $resp; 
     }

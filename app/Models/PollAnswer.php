@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class UnitGood extends Model
+class PollAnswer extends Model
 {
     use HasFactory;
-
-    public $table = "unitgoods"; 
+    public $table = "pollanswers"; 
 }
