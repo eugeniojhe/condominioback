@@ -45,7 +45,7 @@ Route::middleware('auth:api')->group(function(){
     Route::get('/auth/logout',[AuthController::class,'logout']);
 
     Route::get('/walls',[WallController::class,'getAll']);
-    Route::post('/wall/{id}/like',[AuthController::class,'like']);
+    Route::post('/wall/{id}/like',[WallController::class,'like']);
 
     Route::get('/docs',[DocController::class,'getAll']); 
 

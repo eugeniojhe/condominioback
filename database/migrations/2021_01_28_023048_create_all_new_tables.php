@@ -859,7 +859,7 @@ class CreateAllNewTables extends Migration
         $table->string('title'); 
         $table->string('url'); 
         $table->unsignedBigInteger('created_by'); 
-         $table->foreign('company_id')->references('id')->on('companies');
+        $table->foreign('company_id')->references('id')->on('companies');
         $table->foreign('created_by')->references('id')->on('users');
         $table->foreign('unit_id')->references('id')->on('units'); 
         $table->timestamps();

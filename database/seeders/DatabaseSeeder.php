@@ -410,6 +410,52 @@ class DatabaseSeeder extends Seeder
             'user_id'  => 1, 
             'wall_id' => 2,           
          ]);
+
+         DB::table('docs')->insert([
+            'company_id' => 1, 
+            'title' => 'Fatura Cemig',
+            'url' => 'fatura_cemig_fevereiro_2021.pdf', 
+            'user_id' => 1 
+         ]);
+
+         DB::table('docs')->insert([
+            'company_id' => 1, 
+            'title' => 'Fatura Ctbc',
+            'url' => 'fatura_ctbc_fevereiro_2021.pdf', 
+            'user_id' => 1,
+         ]);
+
+         DB::table('docs')->insert([
+            'company_id' => 1, 
+            'title' => 'Fatura Master Free',
+            'url' => 'FATURA_MASTER_FREE.pdf', 
+            'user_id' => 1,
+         ]);
+
+         DB::table('billets')->insert([
+            'company_id' => 1, 
+            'title' => 'Fatura Cemig - Billets',
+            'url' => 'fatura_cemig_fevereiro_2021.pdf',
+            'unit_id' => 3, 
+            'created_by' => 1 
+         ]);
+
+         DB::table('billets')->insert([
+            'company_id' => 1, 
+            'title' => 'Fatura Ctbc Billets',
+            'url' => 'fatura_ctbc_fevereiro_2021.pdf', 
+            'unit_id' => 2,
+            'created_by' => 1,
+         ]);
+
+         DB::table('billets')->insert([
+            'company_id' => 1, 
+            'title' => 'Fatura Master Free Billets',
+            'url' => 'FATURA_MASTER_FREE.pdf', 
+            'unit_id' => 3, 
+            'created_by' => 1,
+         ]);
+
     }
 }
  
