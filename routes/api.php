@@ -55,11 +55,12 @@ Route::middleware('auth:api')->group(function(){
 
     Route::get('/billets',[BilletController::class,'getAll']);
 
+    Route::put('/lostfound/{id}',[LostFoundController::class,'update']); 
     Route::get('/lostfound',[LostFoundController::class,'getAll']);
     Route::post('/lostfound',[LostFoundController::class,'insert']); 
-    Route::put('lostfound/{id}',[LostFoundController::class,'update']); 
+   
 
-    Route::get('/unit/{id]',[UnitController::class,'getInfo']);
+    Route::get('unit/{id}',[UnitController::class,'getInfo']);
     Route::post('/unit/{id}/addperson',[UnitController::class,'addPerson']);
     Route::post('/unit/{id}/addvehicle',[UnitController::class,'addVehicle']);
     Route::post('/unit/{id}/addpet',[UnitController::class,'addPet']);

@@ -619,6 +619,24 @@ class CreateAllNewTables extends Migration
     });
 
 
+    Schema::create('reservations', function (Blueprint $table) {
+        $table->id();
+        $table->unsignedBigInteger('area_id'); 
+        $table->unsignedBigInteger('company_id');
+        $table->unsignedBigInteger('unit_id');
+        $table->string('title'); 
+        $table->date('day'); 
+        $table->date('reservation_data'); 
+        $table->time('start_time'); 
+        $table->time('end_time'); 
+        $table->unsignedBigInteger('user_id'); 
+        $table->foreign('area_id')->references('id')->on('areas'); 
+        $table->foreign('company_id')->references('id')->on('companies');
+        $table->foreign('user_id')->references('id')->on('users');
+        $table->foreign('unit_id')->references('id')->on('units');  
+        $table->timestamps();        
+    });
+
     Schema::create('visitors', function (Blueprint $table) {
         $table->id();
         $table->unsignedBigInteger('company_id'); 
@@ -869,7 +887,8 @@ class CreateAllNewTables extends Migration
         $table->id();
         $table->unsignedBigInteger('company_id');
         $table->unsignedBigInteger('unit_id');
-        $table->string('title'); 
+        $table->string('title',50); 
+        $table->string('description'); 
         $table->string('status')->default('IN_REVIEW'); //Resolved 
         $table->text('photos'); 
         $table->date('expiration_date')->nullable(); 
@@ -883,7 +902,6 @@ class CreateAllNewTables extends Migration
     Schema::create('lostfounds', function (Blueprint $table) {
         $table->id();
         $table->unsignedBigInteger('company_id');
-        $table->unsignedBigInteger('unit_id');
         $table->string('photo');
         $table->string('description');
         $table->string('status')->default('lost'); //Found
@@ -891,8 +909,8 @@ class CreateAllNewTables extends Migration
         $table->date('solution_date')->nullable(); 
         $table->unsignedBigInteger('created_by');             
         $table->foreign('company_id')->references('id')->on('companies');
-        $table->foreign('created_by')->references('id')->on('users');
-        $table->foreign('unit_id')->references('id')->on('units');          
+        $table->foreign('created_by')->references('id')->on('users');  
+        $table->timestamps();      
     });
 
 
@@ -921,7 +939,6 @@ class CreateAllNewTables extends Migration
      */
     public function down()
     {
-         
         Schema::dropIfExists('failed_jobs'); 
         Schema::dropIfExists('password_resets'); 
         Schema::dropIfExists('lostfounds'); 
@@ -940,7 +957,8 @@ class CreateAllNewTables extends Migration
         Schema::dropIfExists('documenttypes'); 
         Schema::dropIfExists('prorates');
         Schema::dropIfExists('visitors');
-        Schema::dropIfExists('readisabledays');
+        Schema::dropIfExists('reservations');
+        Schema::dropIfExists('areadisabledays');
         Schema::dropIfExists('areas');
         Schema::dropIfExists('pollcorrectanswers');
         Schema::dropIfExists('pollanswers');
@@ -971,8 +989,7 @@ class CreateAllNewTables extends Migration
         Schema::dropIfExists('companyusers');
         Schema::dropIfExists('companies');
         Schema::dropIfExists('bankagencies');
-        Schema::dropIfExists('banks');
-             
+        Schema::dropIfExists('banks');             
     }
 }
 

@@ -1,0 +1,3 @@
+Corregindo data 
+
+newDate = date('d-m-y,strtotime(oldDate))
