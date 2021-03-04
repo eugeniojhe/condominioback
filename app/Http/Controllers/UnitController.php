@@ -217,5 +217,86 @@ class UnitController extends Controller
         return $resp; 
     }
 
+    public function removePerson($unitId, Request $request)
+    {
+        $resp = ['error' => ''];
+         $user = Auth()->user(); 
+        if (!$unitId){
+            $resp['error'] = 'Código da unidade não informado'; 
+            return $resp; 
+        }
+
+        $tenantId = $request->input('tenant_id');
+        if(!$tenantId){
+            $resp['error'] = 'Informe a pessoa a ser excluida da unidade';
+            return $resp; 
+        }
+        try {
+            UnitTenant::where('company_id',$user->company_id)
+                   ->where('unit_id',$unitId)
+                   ->where('tenant_id',$tenantId)
+                   ->delete();                  
+        }catch(\Exception $e){
+            $resp['error'] = $e->getMessage(); 
+            return $resp; 
+        }; 
+         return $resp; 
+    }
+
+    public function removeVehicle($unitId, Request $request)
+    {
+        $resp = ['error' => ''];
+         $user = Auth()->user(); 
+        if (!$unitId){
+            $resp['error'] = 'Código da unidade não informado'; 
+            return $resp; 
+        }
+
+        $idVehicle = $request->input('id_vehicle');
+        if(!$idVehicle){
+            $resp['error'] = 'Informe o veiculo a ser excluido da unidade';
+            return $resp; 
+        }
+        try {
+            UnitVehicle::where('company_id',$user->company_id)
+                   ->where('unit_id',$unitId)
+                   ->where('id',$idVehicle)
+                   ->delete();                  
+        }catch(\Exception $e){
+            $resp['error'] = $e->getMessage(); 
+            return $resp; 
+        }; 
+         return $resp; 
+    }
+
+
+    public function removePet($unitId, Request $request)
+    {
+        $resp = ['error' => ''];
+         $user = Auth()->user(); 
+        if (!$unitId){
+            $resp['error'] = 'Código da unidade não informado'; 
+            return $resp; 
+        }
+
+        $idPet = $request->input('id_pet');
+        if(!$idPet){
+            $resp['error'] = 'Informe o pet a ser excluido da unidade';
+            return $resp; 
+        }
+        try {
+            UnitPet::where('company_id',$user->company_id)
+                   ->where('unit_id',$unitId)
+                   ->where('id',$idPet)
+                   ->delete();                  
+        }catch(\Exception $e){
+            $resp['error'] = $e->getMessage(); 
+            return $resp; 
+        }; 
+         return $resp; 
+    }
+
+    
+
 
 }

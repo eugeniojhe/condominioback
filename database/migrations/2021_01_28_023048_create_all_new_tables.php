@@ -624,9 +624,8 @@ class CreateAllNewTables extends Migration
         $table->unsignedBigInteger('area_id'); 
         $table->unsignedBigInteger('company_id');
         $table->unsignedBigInteger('unit_id');
-        $table->string('title'); 
-        $table->date('day'); 
-        $table->date('reservation_data'); 
+        $table->string('title');         
+        $table->date('reservation_date'); 
         $table->time('start_time'); 
         $table->time('end_time'); 
         $table->unsignedBigInteger('user_id'); 
