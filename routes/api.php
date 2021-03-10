@@ -69,7 +69,7 @@ Route::middleware('auth:api')->group(function(){
     Route::post('/unit/{id}/removevehicle',[UnitController::class,'removeVehicle']);
     Route::post('/unit/{id}/removepet',[UnitController::class,'removePet']);
 
-    Route::get('/reservations/',[ReservationController::class,'getReservation']);
+    Route::get('/reservations',[ReservationController::class,'getReservations']);
     Route::post('/reservation/{id}',[ReservationController::class,'setReservation']);
 
     Route::get('/reservation/{id}/disabledates',[ReservationController::class,'getDisableDates']);

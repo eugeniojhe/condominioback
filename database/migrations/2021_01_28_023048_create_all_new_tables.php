@@ -584,6 +584,7 @@ class CreateAllNewTables extends Migration
         $table->string('cover')->nullable();
         $table->string('days')->nullable();
         $table->integer('status')->default(1);
+        $tabhe->unsignedTinyInteger('previous_hours')->nullable(); //Hours before the end of free periodo 
         $table->time('start_time')->nullable(); 
         $table->time('end_time')->nullable(); 
         $table->enum('charge_type',['fixe','percent'])->nullable();//Charge by a fixe value or percent on value condominy
@@ -627,7 +628,7 @@ class CreateAllNewTables extends Migration
         $table->string('title');         
         $table->date('reservation_date'); 
         $table->time('start_time'); 
-        $table->time('end_time'); 
+        $table->time('end_time')->nullable(); 
         $table->unsignedBigInteger('user_id'); 
         $table->foreign('area_id')->references('id')->on('areas'); 
         $table->foreign('company_id')->references('id')->on('companies');
