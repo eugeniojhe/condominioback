@@ -595,7 +595,7 @@ class CreateAllNewTables extends Migration
         $table->boolean('hasaditional_value')->default(false);
         $table->double('aditional_value')->nullable(); 
         $table->string('description_value')->nullable(); 
-        $table->smallInteger('advance_days')->nullable();//How much days before reservation area 
+        $table->unsignedTinyInteger('advance_months')->nullable();//How much days before reservation area 
         $table->unsignedBigInteger('created_by');             
         $table->foreign('company_id')->references('id')->on('companies');
         $table->foreign('created_by')->references('id')->on('users');
@@ -607,11 +607,11 @@ class CreateAllNewTables extends Migration
         $table->id();
         $table->unsignedBigInteger('area_id'); 
         $table->unsignedBigInteger('company_id');
-        $table->unsignedBigInteger('unit_id');
-        $table->string('title'); 
+        $table->unsignedBigInteger('unit_id')->nullable();
+        $table->string('title')->nullable();  
         $table->date('day'); 
-        $table->time('start_time'); 
-        $table->time('end_time'); 
+        $table->time('start_time')->nullable(); 
+        $table->time('end_time')->nullable(); 
         $table->unsignedBigInteger('created_by'); 
         $table->foreign('area_id')->references('id')->on('areas'); 
         $table->foreign('company_id')->references('id')->on('companies');
