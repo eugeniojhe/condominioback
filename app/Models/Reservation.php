@@ -10,6 +10,6 @@ class Reservation extends Model
     use HasFactory;
 
     public function area() {
-        return $this->belongsTo(Area::class); 
+           return $this->belongsTo(Area::class,'area_id','id'); 
     }
 }

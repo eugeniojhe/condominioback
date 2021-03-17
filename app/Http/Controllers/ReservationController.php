@@ -297,14 +297,24 @@ class ReservationController extends Controller
         $resp = ['error' => ''];
         $user = Auth()->user(); 
        
-      
-          $reservations = Reservation::with('area:id,title,cover')                                      
-                                      ->where('company_id',$user->company_id)
-                                      ->where('user_id',$user->id)
-                                      ->orderBy('reservation_date')                                      
-                                      ->get(['area_id','title','start_time','end_time']);
-        
-         $resp['reservations'] = $reservations; 
+      /* 
+          $reservations = Reservation::with('area:id,company_id,title,cover')                                      
+                        ->where('company_id',$user->company_id)
+                        ->where('user_id',$user->id)
+                        ->orderBy('reservation_date')                                      
+                        ->get(['area_id','company_id','title','start_time','end_time']); */
+         $reservations = Reservation::with(['area' => function ($query) {
+                        $user = Auth()->user();                               
+                        $query->select('id','title','cover')
+                                ->where('company_id',$user->company_id);
+                        }])->get(['area_id','company_id',
+                                  'title','reservation_date',
+                                  'start_time','end_time']);
+         foreach($reservations as $key =>   $value){
+              $reservations[$key]['area']['cover'] = asset('storage/').$value->cover;             
+         }
+                
+         $resp['reservations'] = $reservations;  
 
         return $resp; 
     }

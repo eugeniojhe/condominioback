@@ -112,7 +112,8 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-       $resp = ['error' => ''];              
+       $resp = ['error' => '']; 
+                    
        $validator = Validator::make($request->all(), [
             'company' => 'required|integer|exists:companies,id', 
             'email' =>'required|email|exists:users,email',
@@ -120,7 +121,7 @@ class AuthController extends Controller
         ]);
     
         if($validator->fails()){
-            $resp['error'] = $validator->errors();
+            $resp['error'] = $validator->errors()->first();
             return $resp;
         } 
 
@@ -133,7 +134,9 @@ class AuthController extends Controller
 
        $credentials = request(['email', 'password']);     
        if (!$token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+           // return response()->json(['error' => 'Unauthorized'], 401);
+           $resp['error'] = response()->json(['error' => 'Unauthorized'], 401);
+           return $resp; 
         }
 
         $user = auth()->user();
@@ -171,8 +174,8 @@ class AuthController extends Controller
 
 
     public function validateToken() {
+
         $resp = ['error' => ''];
-        $user = auth()->user();
         $unitTenants = UnitTenant::select()
                                   ->where('company_id',$user->company_id)
                                   ->where('tenant_id',$user->id)
@@ -187,7 +190,7 @@ class AuthController extends Controller
                             ->get(); 
         }
         $resp['user'] = $user;
-        $resp['user']['units'] = $units;             
+        $resp['user']['units'] = $units;           
 
         return $resp; 
     }
